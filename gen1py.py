@@ -11,15 +11,19 @@ class Pokemon():
             exit(1)
 '''
 
-def write_data() -> int:
-    with open("red.sav", "rb") as s, open("output.sav", "wb") as o:
-        hexdata = bytearray(s.read())
-        offset = int(input("Offset: "))
-        hexdata[offset] = int(input("Value: "))
-        checksum(hexdata)
-        o.write(hexdata)
-        print("Done.")
-    return 0
+def edit_hex(file:str, edt, val, hex=True):
+    with open(file, "rb") as savesource, open("save.sav","wb") as saveoutput:
+        try:
+            hexdata = bytearray(savesource.read())
+            if hex:
+                offset = int(edt, base=16)
+                hexdata[offset] = int(val.capitalize(), base=16)
+            else:
+                offset = int(edt)
+                hexdata[offset] = int(val)
+            saveoutput.write(hexdata)
+            return saveoutput
+        except Exception as e:print(f"hex_E; {e}")
 
 # Function to compute the checksum needed so that the save doesn't appear corrupted in the game
 def checksum(data): 
@@ -31,5 +35,4 @@ def checksum(data):
     if (total_checksum < 0):
         total_checksum = 0
     data[13603] = total_checksum
-    
-write_data()
+

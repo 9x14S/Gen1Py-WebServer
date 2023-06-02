@@ -1,5 +1,6 @@
 *
-
+!*.py
+!/*
 !red.sav
 !pkmn.json
 !README.md

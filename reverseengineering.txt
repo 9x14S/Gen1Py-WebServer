@@ -1,0 +1,31 @@
+In gbz80 ASM, the '$' before a number indicates that it is a literal.
+
+The number of bytes that are counter when starting the checksum is 0x0F8B and it is stored
+    in the 'bc' register.
+
+'hl' works as the pointer/cursor when reading from the save.
+'af' is the general register.
+'bc' has the byte count to read.
+'d' has the current sum, it is a number between 0 and 255. 'e' isn't used.
+
+
+The checksum works as follows:
+
+    The 8-bit 'd' register is assigned 0. 
+
+    Then the contents of the address at 'hl' (16-bit register) are moved into 'a', the 
+        main 8-bit register. 
+        'hl' here is a pointer that's increased everytime it is dereferenced.
+        'hl' always starts at 0xA598.
+        This is the first instruction in the loop. 
+        The address of this instruction is 0x7858.
+
+    The contents at 'd' and 'a' are added together and stored back into 'd'.
+
+    'bc' is decreased by one.
+
+    Then, 'bc' is split into 'b' and 'c', with the contents of 'b' moved into 'a'.
+    
+    'a' is ORed against 'c', and then a jump if nonzero to the first instruction is called.
+    
+    If it is zero, then load 'd' into 'a' and complement it (invert its bits).

@@ -1,7 +1,4 @@
-*
-!*.py
-!/*
-!red.sav
-!pkmn.json
-!README.md
-!.gitignore
+Testing
+*.exe
+__pycache__
+*.so

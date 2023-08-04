@@ -1,6 +1,21 @@
 # import json
 from sys import argv
 from colorama import *
+import ctypes
+
+library = ctypes.CDLL(".\\CTools\\savetools.so")
+
+C_checksum = library.checksum
+C_checksum.argtypes = [ctypes.c_void_p] # Need to change the first argument to FILE *
+C_checksum.restype = ctypes.c_int
+
+C_edit_offset = library.edit_offset
+C_edit_offset.argtypes = [ctypes.c_char_p, ctypes.c_int, ctypes.c_char] # Need to change the first argument to FILE *
+C_edit_offset.restype = ctypes.c_int
+
+C_open_file = library.open_file
+C_open_file.argtypes = [ctypes.c_char_p]
+
 
 def print_help() -> None:
     print("Usage: python main.py (COMMAND) [FLAG/S]. \n \
@@ -30,7 +45,8 @@ def print_help() -> None:
 def edit_hex(hexdata, offset, val:bytes):
     
     # Open both files, the source and the output file
-    with open(file=argv[1].split(sep=".")[0] + "(modified).sav", mode="wb") as saveoutput:
+    # ''.join([argv[1].split(sep=".")[0], "(modified).sav"]
+    with open(file='red-output.sav', mode="wb") as saveoutput:
         
         # Exception handling for any incorrect values
         try:
@@ -47,33 +63,20 @@ def edit_hex(hexdata, offset, val:bytes):
             print("Exiting...")
             exit(code=1)
 
-# Function to compute the checksum needed so that the save doesn't appear corrupted in the game
-def checksum(data:bytearray, edit=False) -> bytearray: 
+def checksum(data=None, edit=False): 
     '''The checksum is calculated as follows:
     Initialize the checksum byte to 0.
     Binary sum the values in each memory address from 0x2598 to 0x3522 exclusive, ignoring any carryover.
     Invert the result.
 
-    Then the checksum result is inserted at (decimal) offset 13603 to be compared while running.'''
+    Then the checksum result is inserted at offset 0x3523 to be compared while running.'''
     
-    # Initialize the checksum variable to 0, then add to it each value from the range
-    total_checksum = bytearray(1)
-    total_checksum[0] = 0
-    temp = 0
-    for i in data[0x2598:0x3523+1]:
-        if (total_checksum[0] + i == 255):
-            total_checksum[0] = 255
-        elif ((total_checksum[0] + i) % 255 > 0):
-            temp = (total_checksum[0] + i) % 255
-            # print(i, '-', temp, ' ', end='', sep='')
-            total_checksum[0] = temp
-        else:
-            total_checksum[0] += i
-    
-    print(f"Computed checksum: {total_checksum[0]}. Previous checksum: {data[13603]}")
-    # Then, invert it and inject it back to its place
+    # Invoke and store the computed checksum from a function in C
+    computed = C_checksum(argv[1].encode("ascii"))
+    if (data is None):
+        return computed
     if (edit):
-        data[0x3523] = 0xe2 #~(~(total_checksum[0]))
+        pass
     return data
     
 # Function to open the save file and return it as a bytearray object
@@ -104,17 +107,25 @@ def print_hexdata(hexdata:bytearray) -> None:
             bank = range(8192 * 3, 8192 * 4 - 1)
         case 'a' | 'A':
             bank = range(0, 8192 * 4)
-        case 'm' | 'M':
+        case 'm' | 'M' | "":
             bank = range(0x2598, 0x3523 + 1)
         case 'o' |'O':
-            offset = int(input("Offset: "))
+            offset = input("Offset: ")
+            if ('x' in offset):
+                offset = int(offset, base=16)
+            else:
+                offset = int(offset)
             print(f"Data: {hexdata[offset]}")
             return
         case _:
             raise ValueError
             
     # Select the byte width
-    bytes_to_print = int(input("Type in the number of bytes to display: "))
+    bytes_to_print = input("Type in the number of bytes to display: ")
+    if (bytes_to_print == ""):
+        bytes_to_print = 12
+    else:
+        bytes_to_print = int(bytes_to_print)
     
     # count is the variable that determines if a newline should be printed 
     # data_string is a placeholder for the bytes' potential meaning before it is printed
@@ -127,17 +138,7 @@ def print_hexdata(hexdata:bytearray) -> None:
     for t in bank:
         # Print the first offset group once 
         if (first):print(("0x" + hex(t)[2:].upper()).ljust(7) + ": ", end="");first = False
-        
-        #### This shouldn't works as the character encoding for the games isn't ASCII ####
-        """
-        # If the current byte is a printable ASCII character, add it to data_string
-         if ((hexdata[t] > 31 ) and (hexdata[t]) < 127):
-        # If the current character is a period, then print it with colors
-        if (chr(hexdata[t]) == "."):
-            data_string += Fore.GREEN + Back.YELLOW + (chr(int(hexdata[t]))) + Style.RESET_ALL
-        else:
-            data_string += chr(int(hexdata[t])) """
-            
+                    
         # TO-DO: Add option to print as ASCII or based on the game's character encoding
         if ((hexdata[t] > 0x7F ) and (hexdata[t]) < 0x9A):
             data_string += Fore.GREEN + Back.YELLOW + (chr(int(hexdata[t]) - 63)) + Style.RESET_ALL

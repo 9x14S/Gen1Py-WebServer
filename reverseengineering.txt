@@ -13,12 +13,13 @@ The checksum works as follows:
 
     The 8-bit 'd' register is assigned 0. 
 
-    Then the contents of the address at 'hl' (16-bit register) are moved into 'a', the 
+    Then the contents of the address (dereferenced) at 'hl' (16-bit register) are moved into 'a', the 
         main 8-bit register. 
         'hl' here is a pointer that's increased everytime it is dereferenced.
         'hl' always starts at 0xA598.
         This is the first instruction in the loop. 
-        The address of this instruction is 0x7858.
+        The address of this instruction is 0x7858 in ROM1C.
+        
 
     The contents at 'd' and 'a' are added together and stored back into 'd'.
 
@@ -29,3 +30,8 @@ The checksum works as follows:
     'a' is ORed against 'c', and then a jump if nonzero to the first instruction is called.
     
     If it is zero, then load 'd' into 'a' and complement it (invert its bits).
+
+    Afterwards, return, load 'a' into 'c' (now 'a' is the computed checksum) and the value
+        at [$B523] (which I presume is the previous computed checksum) and compare them.
+
+    I've managed to make a prototype that computes the exact checksum in C.

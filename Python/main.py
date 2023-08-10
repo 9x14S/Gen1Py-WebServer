@@ -6,7 +6,7 @@ file = 0
 def main() -> int: 
     global file
     # If no arguments are provided, throw an error
-    assert (len(argv) >= 3), "A single filename is required and a command. "
+    assert (len(argv) >= 3), f"Usage: {argv[0]} <FILEPATH> <COMMAND> [OPTIONS]. "
     assert ('.gb' not in argv[1].lower()), "Oops, you're trying to view or edit the game. "
    
 

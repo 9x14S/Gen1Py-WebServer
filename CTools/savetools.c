@@ -1,10 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define MAIN_START 0x2597
+#define MAIN_START 0x2598
 #define MAIN_END 0x3522
 #define CHECKSUM 0x3523
-#define MAIN_RANGE 0xF8B
+#define MAIN_RANGE 0xF8A
 
 #define BAD_SAVENAME -1
 #define B_SERROR "Invalid save file name."
@@ -37,6 +37,7 @@ FILE *open_file(char *savename)
         fclose(save);
         exit(COULDNT_OPEN);
     }
+    puts("(From C): Opened file.");
     return save;
 }
 
@@ -45,7 +46,7 @@ int close_file(FILE *save)
     if (save != NULL)
     {
         fclose(save);
-        puts("(From C): Closed file. \n");
+        puts("(From C): Closed file.");
         return 0;
     }
     else
@@ -58,7 +59,7 @@ int close_file(FILE *save)
 int checksum(FILE *save)
 {
     unsigned char prevcheck, compcheck, temp;
-
+    compcheck = temp = 0;
     // Move to and get the previous checksum
     fseek(save, CHECKSUM, SEEK_SET);
     
@@ -73,7 +74,7 @@ int checksum(FILE *save)
     fseek(save, MAIN_START, SEEK_SET);
 
     // Calculate the checksum 
-    for (int i = MAIN_RANGE ; i != 0; i--)
+    for (int i = MAIN_RANGE; i != 0; i--)
     {
         temp = fgetc(save);
         if (temp == EOF)
@@ -86,8 +87,8 @@ int checksum(FILE *save)
         else compcheck += temp;
     }
 
-    compcheck = ~compcheck - 1;
-    printf("(From C): Previous checksum: %X, Computed checksum: %X.\n", prevcheck, compcheck);
+    compcheck = ~compcheck;
+    printf("(From C): Previous checksum: 0x%X, Computed checksum: 0x%X.\n", prevcheck, compcheck);
     fclose(save);
     return compcheck;
 }
@@ -95,8 +96,7 @@ int checksum(FILE *save)
 int edit_offset(FILE *save, int offset, unsigned char value)
 {
     // Debug printf
-    printf("Offset: %X, Value: %X\n", offset, value);
-
+    printf("(From C): Offset: 0x%X, Value: 0x%X\n", offset, value);
 
     fseek(save, offset, SEEK_SET);
     fputc(value, save);

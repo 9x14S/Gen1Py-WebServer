@@ -1,4 +1,5 @@
 from wrapper import *
+from printhex import *
 
 file = 0
 
@@ -13,19 +14,23 @@ def main() -> int:
         match (argv[2].lower()):
             case "checksum":
                 file = open_file(argv[1])
-                print(f"(From Python): Returned checksum: 0x{hex(checksum(file))[2:].upper()}")
+                check_value = int(checksum(file))
+                print(f"(From Python): Returned checksum: 0x{hex(check_value)[2:].upper()}")
+                close_file(file)
                 return 0
             case "edithex":
                 file = open_file(argv[1])
-                offset = int(input("Offset (hex): "), base=16)
-                value = int(input("Value (hex): "), base=16)
-                C_edit_offset(file, offset, value)
+                edit_hex(file)
                 return close_file(file)
             case "print":
-                hex_dump(argv[1])
+                if (len(argv) == 4):
+                    bank = argv[3]
+                else:
+                    bank = '1'
+                hex_dump(argv[1], bank)
                 return 0
             case _:
-                raise ValueError("Unknown command.")
+                raise ValueError("(From Python): Unknown command.")
     except Exception as Ex:
         if (file != 0):
             close_file(file)

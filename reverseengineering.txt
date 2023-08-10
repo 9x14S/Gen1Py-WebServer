@@ -17,6 +17,7 @@ The checksum works as follows:
         main 8-bit register. 
         'hl' here is a pointer that's increased everytime it is dereferenced.
         'hl' always starts at 0xA598.
+        In the actual save file, the main data bank starts at 0x2598 and ends at 0x3522, exclusive.
         This is the first instruction in the loop. 
         The address of this instruction is 0x7858 in ROM1C.
         

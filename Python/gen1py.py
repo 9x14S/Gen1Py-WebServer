@@ -1,3 +1,6 @@
+"""
+DEPRECATED, phasing out for wrapper.py
+"""
 # import json
 from sys import argv
 from colorama import *

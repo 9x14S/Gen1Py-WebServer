@@ -2,3 +2,4 @@ Testing
 *.exe
 __pycache__
 *.so
+*.exe

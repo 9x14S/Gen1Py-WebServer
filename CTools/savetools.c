@@ -45,7 +45,7 @@ int close_file(FILE *save)
     if (save != NULL)
     {
         fclose(save);
-        puts("(From C): Saved changes. \n");
+        puts("(From C): Closed file. \n");
         return 0;
     }
     else
@@ -87,13 +87,16 @@ int checksum(FILE *save)
     }
 
     compcheck = ~compcheck - 1;
-    printf("(From C): Previous checksum: %d, Computed checksum: %d.\n", prevcheck, compcheck);
+    printf("(From C): Previous checksum: %X, Computed checksum: %X.\n", prevcheck, compcheck);
     fclose(save);
     return compcheck;
 }
 
 int edit_offset(FILE *save, int offset, unsigned char value)
 {
+    // Debug printf
+    printf("Offset: %X, Value: %X\n", offset, value);
+
 
     fseek(save, offset, SEEK_SET);
     fputc(value, save);

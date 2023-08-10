@@ -1,5 +1,5 @@
 # Gen1Py
-A simple Pokemon Save File Editor for the Generation 1 games (Red, Green, Blue, Yellow)
+A simple Pokemon Save File Editor for the Generation 1 games (Red, Green, Blue and (not yet) Yellow)
 
 ## To-Do
 + [x] A function for printing the data inside a save
@@ -9,9 +9,9 @@ A simple Pokemon Save File Editor for the Generation 1 games (Red, Green, Blue, 
 
 + [ ] Linux/MacOS compatibility
 
-+ [ ] Support for other localizations and games in the generation (Red, Blue, Green, Yellow)
++ [ ] Support for other localizations and games in the generation (Yellow)
 
-+ [ ] Command Line argument parsing. So that the input() functions can be dropped
++ [ ] Command Line argument parsing with `argparse`. So that the input() functions can be dropped
 
     + [ ] "help"/--help/-h flag comprehension. If using a flag, override all others including the command
     + [ ] "print" command comprehension to format and print the save file
@@ -37,6 +37,6 @@ A simple Pokemon Save File Editor for the Generation 1 games (Red, Green, Blue, 
 
 - [ ] Maybe create a PyPi Package out of this
 
-- [ ] A simple online version so that nothing has to be downloaded/installed
-
 - [ ] A way to import the data from the Pokemon Showdown export option
+### Current goal:
+- [ ] A simple online version so that nothing has to be downloaded/installed

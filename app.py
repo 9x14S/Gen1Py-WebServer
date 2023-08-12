@@ -10,9 +10,15 @@ def index():
 @app.route("/upload", methods=["POST"])
 def upload():
 	if 'savefile' in request.files:
-		return redirect("/edit", code=307)
+		return redirect("/parse", code=307)
 	else:
 		return "Didn't get a file. <a href='/'>Go back</a>"
+
+@app.route("/parse", methods=["POST"])
+def parse():
+	# TODO: call the Gen1Py functions to read the uploaded file and pass back savefile info. 
+	savefile = request.files['savefile']
+	return redirect("/edit", code=307)
 
 @app.route("/edit", methods=["GET", "POST"])
 def edit():

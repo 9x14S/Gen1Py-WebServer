@@ -9,3 +9,4 @@ bin
 Lib
 pyvenv.cfg
 reverseengineering.txt
+lib*

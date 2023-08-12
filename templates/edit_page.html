@@ -3,6 +3,7 @@
 {% block title %}Gen1Py: Editing{% endblock %}
 
 {% block content %}
+{{ savefile }}
 <form action="" method="post" autocomplete="off">
     <label for="playername">Player Name:</label>
     <input type="text" name="playername" placeholder="{{ playername }}" pattern="/[A-Za-z]{1,10}/">

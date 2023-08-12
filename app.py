@@ -10,8 +10,7 @@ def index():
 @app.route("/upload", methods=["POST"])
 def upload():
 	if 'savefile' in request.files:
-		file = request.files['savefile']
-		return "Succesfully caught a file."
+		return redirect("/edit", code=307)
 	else:
 		return "Didn't get a file. <a href='/'>Go back</a>"
 
@@ -21,12 +20,14 @@ def edit():
 		return redirect("/")
 		# don't let users go straight to the edit page without a save file.
 	elif request.method=="POST":
+		savefile=request.files['savefile']
 		# TODO: add file validation and an intermediate path.
 		playername="test_name", 
 		money="test_money", 
 		playerid=-1, 
 		firstpokename="test_pokename"
 		return render_template("edit_page.html", 
+									savefile=savefile,
 									playername=playername, 
 									money=money, 
 									playerid=playerid, 

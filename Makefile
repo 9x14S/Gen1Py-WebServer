@@ -10,7 +10,7 @@ endif
 
 savetools.so : CTools/savetools.c
 	gcc -fPIE -shared -o CTools/savetools.so CTools/savetools.c -Wall 
-	$(PYTHON) -m virtualenv .
+	$(PYTHON) -m venv .
 
 install : savetools.so
 	$(PIP) install -r requirements.txt

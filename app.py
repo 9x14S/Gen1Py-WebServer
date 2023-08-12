@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect
 
 app = Flask(__name__) # Turn this file into a Flask app
 
@@ -7,6 +7,20 @@ app = Flask(__name__) # Turn this file into a Flask app
 def index():
 	return render_template("index.html")
 
-@app.route("/edit")
+@app.route("/edit", methods=["GET", "POST"])
 def edit():
-	return render_template("edit_page.html", playername="test_name", money="test_money", playerid=-1, firstpokename="test_pokename")
+	if request.method=="GET":
+		return redirect("/")
+		# don't let users go straight to the edit page without a save file.
+	elif request.method=="POST":
+		# TODO: add file validation and an intermediate path.
+		playername="test_name", 
+		money="test_money", 
+		playerid=-1, 
+		firstpokename="test_pokename"
+		return render_template("edit_page.html", 
+									playername=playername, 
+									money=money, 
+									playerid=playerid, 
+									firstpokename=firstpokename
+									)

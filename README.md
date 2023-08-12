@@ -14,6 +14,9 @@ Make sure you have the `python3-virtualenv` package installed with your OS's pac
 
 Then type `make`, afterwards, `cd` into the folder and activate the virtual environment. Finally, type `make install` to install the required `pip` packages. Congratulations! We're so happy for you.
 
+#### Web Interface:
+Once the above steps are completed, run the command `flask run` in the Gen1Py directory. This should activate a Flask webserver and spit out an ip and port number (ex. 127.0.0.1:5000). Navigate to this address in your browser to use the webapp locally, or configure it for your own hosted use. 
+
 ## To-Do
 
 + [x] A function for printing the data inside a save

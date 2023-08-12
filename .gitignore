@@ -9,3 +9,5 @@ bin
 Lib
 pyvenv.cfg
 reverseengineering.txt
+lib*
+red_ONEPOKE_.sav

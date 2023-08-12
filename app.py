@@ -7,6 +7,14 @@ app = Flask(__name__) # Turn this file into a Flask app
 def index():
 	return render_template("index.html")
 
+@app.route("/upload", methods=["POST"])
+def upload():
+	if 'file' in request.files:
+		file = request.files['file']
+		return "Succesfully caught a file."
+	else:
+		return "Didn't get a file. <a href='/'>Go back</a>"
+
 @app.route("/edit", methods=["GET", "POST"])
 def edit():
 	if request.method=="GET":

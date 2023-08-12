@@ -4,9 +4,13 @@
 
 {% block content %}
 <form action="" method="post" autocomplete="off">
+    <label for="playername">Player Name:</label>
     <input type="text" name="playername" placeholder="{{ playername }}" pattern="/[A-Za-z]{1,10}/">
+    <label for="money">Money:</label>
     <input type="text" name="money" placeholder="{{ money }}" pattern="/\d{0,6}/">
+    <label for="playerid">Player ID:</label>
     <input type="text" name="playerid" placeholder="{{ playerid }}" pattern="/\d{0,5}/">
+    <label for="firstpokename">Name of Your First Pokemon:</label>
     <input type="text" name="firstpokename" placeholder="{{ firstpokename }}" pattern="/[A-Za-z]{1,10}/">
 </form>
 </br>

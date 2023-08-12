@@ -15,7 +15,12 @@ def hex_dump(filename: str, selection: str):
         count = 1
         data_string = "" # Buffer to hold the formatted line before printing
         bytes_to_print = 12 # Byte width for each line, this should be modifiable
-        
+        return_value = False # Return the value printed?
+        if (selection[-1].lower() == 'p'):
+            should_print = True # Print or just return the value? 
+            selection = selection[0:-1]
+        else:
+            should_print = False
         match selection:
             case '0':
                 bank = range(0x0, 0x2000) # First bank, with hall of fame data
@@ -27,16 +32,27 @@ def hex_dump(filename: str, selection: str):
                 bank = range(0x6000, 0x8000) # Fourth, PC boxes 7-12
             case 'm' | 'M':
                 bank = range(0x2598, 0x3523 + 1) # The main data, where the player's data is stored
+            case 'name':
+                bank = range(0x2598, 0x2598 + 11)
+                return_value = True
+            case 'money':
+                bank = range(0x25F3, 0x25F3 + 3)
+                return_value = True
+            case 'id':
+                bank = range(0x2605, 0x2605 + 3)
+                return_value = True
             case _:
                 raise ValueError(f"Unknown bank '{selection}'.")
         
         first = True # Temporary value 
-        
+        return_string = []
         for byte in bank:
             # Print the first offset group once 
-            if (first):
+            if (first and should_print):
                 print(''.join(["0x", hex(byte)[2:].upper()]).ljust(7) + ": ", end="")
                 first = False
+            if (return_value):
+                return_string.append(opensave[byte])
                         
             # TO-DO: Add option to print as ASCII or based on the game's character encoding
             
@@ -62,12 +78,27 @@ def hex_dump(filename: str, selection: str):
             hex_string = ("0x" + (hex(opensave[byte]))[2:].upper()).ljust(6, " ")
             
             # Print values based on byte width
-            if (count == bytes_to_print):
+            if (count == bytes_to_print and should_print):
                 print(hex_string, f"# {data_string}\n{('0x' + hex(byte)[2:].upper()).ljust(7)}: ", end="")
                 data_string = ""
                 count = 0
-            else:
+                
+            elif (should_print):
                 print(hex_string, end="")
+                
             count += 1
-        print("\n\r", "-" * 105)
+        if (should_print): print("\n\r", "-" * 105)
+        if (return_value):
+            return return_string
     return
+
+def translate(data_string: list):
+    output = ''
+    for char in data_string:
+        if (char == 80 or char == 0):
+            break
+        if ((char > 0x7F ) and (char) < 0x9A) or \
+            ((char > 0x9F ) and (char) < 0xBA):
+            output = ''.join([output, chr(char - 63)])
+    return output
+                   

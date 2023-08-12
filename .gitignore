@@ -11,3 +11,6 @@ pyvenv.cfg
 reverseengineering.txt
 lib*
 red_ONEPOKE_.sav
+test.sav
+Uploads/*
+target

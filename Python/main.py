@@ -1,5 +1,5 @@
-from wrapper import *
-from printhex import *
+from Python.wrapper import *
+from Python.printhex import *
 
 file = 0
 

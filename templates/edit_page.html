@@ -5,15 +5,38 @@
 {% block content %}
 {{ savefile }}
 <form action="" method="post" autocomplete="off">
-    <label for="playername">Player Name:</label>
-    <input type="text" name="playername" placeholder="{{ playername }}" pattern="/[A-Za-z]{1,10}/">
-    <label for="money">Money:</label>
-    <input type="text" name="money" placeholder="{{ money }}" pattern="/\d{0,6}/">
-    <label for="playerid">Player ID:</label>
-    <input type="text" name="playerid" placeholder="{{ playerid }}" pattern="/\d{0,5}/">
-    <label for="firstpokename">Name of Your First Pokemon:</label>
-    <input type="text" name="firstpokename" placeholder="{{ firstpokename }}" pattern="/[A-Za-z]{1,10}/">
+    <table> 
+        <thead>
+            <td>
+                <label for="playername">Player Name: {{ playername }}</label>
+            </td>
+            <td>
+                <label for="money">Money: {{ money }}</label>
+            </td>
+            <td>
+                <label for="playerid">Player ID: {{ playerid }}</label>
+            </td>
+            <td>
+                <label for="firstpokename">Name of Your First Pokemon: {{ firstpokename }}</label>
+            </td>
+        </thead>
+        <tbody>
+            <td>
+                <input type="text" name="playername" placeholder="Ex: AAAAAAA" pattern="/[A-Za-z]{1,10}/">
+            </td>
+            <td>
+        <input type="text" name="money" placeholder="Ex: 999999" pattern="/\d{0,6}/">
+            </td>
+            <td>
+        <input type="text" name="playerid" placeholder="Ex: 00000" pattern="/\d{0,5}/">
+             </td>
+             <td>
+        <input type="text" name="firstpokename" placeholder="Ex: BULBASAUR" pattern="/[A-Za-z]{1,10}/">
+            </td>
+        </tbody>
+        
+    </table>
 </form>
-</br>
+<br>
 <a href="/">Abort Edit</a>
 {% endblock %}

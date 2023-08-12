@@ -9,8 +9,8 @@ def index():
 
 @app.route("/upload", methods=["POST"])
 def upload():
-	if 'file' in request.files:
-		file = request.files['file']
+	if 'savefile' in request.files:
+		file = request.files['savefile']
 		return "Succesfully caught a file."
 	else:
 		return "Didn't get a file. <a href='/'>Go back</a>"

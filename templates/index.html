@@ -6,6 +6,9 @@
 <h2>Gen1Py Home</h2>
 <p>This is where you'd see some info about the website and have an upload dialog to upload a Gen1 Save File for editing.</p>
 <form action="/upload" method="post">
+    <label for='savefile'>Upload a Gen1 Save File...</label>
+    <input type='file' name='savefile'/> 
+    <br />
     <button type="submit">Upload File for Editing</button>
 </form>
 {% endblock %}

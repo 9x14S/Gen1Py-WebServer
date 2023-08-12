@@ -1,14 +1,25 @@
 {% extends "layout.html" %}
 
-{% block title %}Gen1Py: Home{% endblock %}
+{% block title %}Gen1Py: Upload File{% endblock %}
 
 {% block content %}
-<h2>Gen1Py Home</h2>
-<p>This is where you'd see some info about the website and have an upload dialog to upload a Gen1 Save File for editing.</p>
+<div class="container ">
+<h1 class="header">
+    <span style="color: rgb(100, 135, 167);">Gen</span><span style="color: rgb(205, 50, 75);">1</span><span style="color: rgb(98, 152, 99);">Py</span>
+    <br>
+    <span class="headerinfo">Pokémon Gen 1 Save Editor</span>
+</h1>
+<hr>
+
+<h2>
+    Upload your file
+</h2>
+
 <form action="/upload" method="post" enctype = "multipart/form-data">
-    <label for='savefile'>Upload a Gen1 Save File...</label>
-    <input type='file' name='savefile'/> 
-    <br />
-    <button type="submit">Upload File for Editing</button>
+    <div class="input-group">
+        <input type="file" class="form-control" name="savefile" aria-label="Upload">
+        <button class="btn btn-outline-secondary" type="submit" for="savefile">Upload</button>
+      </div>
 </form>
+</div>
 {% endblock %}

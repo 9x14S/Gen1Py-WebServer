@@ -3,39 +3,25 @@
 {% block title %}Gen1Py: Editing{% endblock %}
 
 {% block content %}
-{{ savefile }}
-<form action="" method="post" autocomplete="off">
-    <table> 
-        <thead>
-            <td>
-                <label for="playername">Player Name: {{ playername }}</label>
-            </td>
-            <td>
-                <label for="money">Money: {{ money }}</label>
-            </td>
-            <td>
-                <label for="playerid">Player ID: {{ playerid }}</label>
-            </td>
-            <td>
-                <label for="firstpokename">Name of Your First Pokemon: {{ firstpokename }}</label>
-            </td>
-        </thead>
-        <tbody>
-            <td>
-                <input type="text" name="playername" placeholder="Ex: AAAAAAA" pattern="/[A-Za-z]{1,10}/">
-            </td>
-            <td>
-        <input type="text" name="money" placeholder="Ex: 999999" pattern="/\d{0,6}/">
-            </td>
-            <td>
-        <input type="text" name="playerid" placeholder="Ex: 00000" pattern="/\d{0,5}/">
-             </td>
-             <td>
-        <input type="text" name="firstpokename" placeholder="Ex: BULBASAUR" pattern="/[A-Za-z]{1,10}/">
-            </td>
-        </tbody>
-        
-    </table>
+<h1 class="fileinfo">Editing file: {{ savefile }}</h1>
+<hr>
+<form action="/done" method="post" autocomplete="off" class="row g-3 container center">
+    <div class="col-md-6">
+        <label for="playername" class="form-label">Player Name: {{ playername }}</label>
+        <input class="form-control" type="text" name="playername" placeholder="New name:" pattern="/[A-Za-z]{1,10}/">
+    </div>
+    <div class="col-md-6">
+        <label for="money" class="form-label">Money: ¥{{ money }}</label>
+        <input class="form-control" type="text" name="money" placeholder="New amount:  " pattern="/\d{0,6}/">
+    </div>
+    <div class="col-md-6">
+        <label for="playerid" class="form-label">Player ID: {{ playerid }}</label>
+        <input class="form-control" type="text" name="playerid" placeholder="New id:" pattern="/\d{0,5}/">
+    </div>
+    <div class="col-md-6">
+        <label for="firstpokename" class="form-label">Name of Your First Pokemon: {{ firstpokename }}</label>
+        <input class="form-control" type="text" name="firstpokename" placeholder="New nickname: " pattern="/[A-Za-z]{1,10}/">
+    </div>
 </form>
 <br>
 <a href="/">Abort Edit</a>

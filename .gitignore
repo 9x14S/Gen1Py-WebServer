@@ -1,6 +1,11 @@
 Testing
-*.exe
 __pycache__
 *.so
-*.exe
 gen1py.py
+printhex.c
+printhex.exe
+Scripts
+bin
+Lib
+pyvenv.cfg
+reverseengineering.txt

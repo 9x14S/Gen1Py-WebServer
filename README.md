@@ -2,6 +2,18 @@
 
 A simple Pokemon Save File Editor for the Generation 1 games (Red, Green, Blue and (not yet) Yellow)
 
+## Installation
+
+### Windows:
+Make sure you have `python-virtualenv` installed through `pip` and `GCC`.
+
+Then change directory into this folder and run `make`, activate the virtual environment that was just made and type `make install` to install the required `pip` packages. That's it! Congrats.
+
+### POSIX:
+Make sure you have the `python3-virtualenv` package installed with your OS's package manager (not `pip`) and `GCC`.
+
+Then type `make`, afterwards, `cd` into the folder and activate the virtual environment. Finally, type `make install` to install the required `pip` packages. Congratulations! We're so happy for you.
+
 ## To-Do
 
 + [x] A function for printing the data inside a save

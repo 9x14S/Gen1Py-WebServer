@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+// Main bank offsets
 #define MAIN_START 0x2598
 #define MAIN_END 0x3522
 #define CHECKSUM 0x3523

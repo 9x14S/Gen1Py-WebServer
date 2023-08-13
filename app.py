@@ -1,8 +1,22 @@
-from Python.printhex import hex_dump, translate 
-from Python.wrapper import *
+"""
+Flask app file. Run with 'python(3) -m Flask run' after activating the virtual environment.
+
+This program starts a local webserver that enables you to open a Gen 1 Pokémon save file, and
+    to view or edit it. 
+    
+This program carries no warranty whatsoever. If you use it, you're responsible for any damages to your 
+    save. We can't help you if you mess your save file by doing dumb editions.
+    
+    Research well before making any editions. 
+    
+Made by 9x14S and Micah Raney.
+"""
+
+import os
+
+from Package import * 
 from flask import Flask, render_template, request, redirect
 from werkzeug.utils import secure_filename
-import os
 app = Flask(__name__) # Turn this file into a Flask app
 
 
@@ -35,11 +49,6 @@ def parse():
         filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         savefile.save(filepath)
         
-        
-        unformatted_name = hex_dump(filepath, 'name')
-        formatted_name = translate(unformatted_name)
-        
-        
         return redirect("/edit", code=307)
     
     return redirect("/")
@@ -50,31 +59,22 @@ def edit():
         return redirect("/") # Don't let users go straight to the edit page without a save file.
         
     elif request.method=="POST":
-        # I made a mess here, sorry
-        # TODO: 
-        # I should make some extra functions to get all the info at the same time and 
-        # parse it instead of doing this 
         
         savefile=secure_filename(request.files['savefile'].filename)
         filepath = os.path.join(app.config['UPLOAD_FOLDER'], savefile)
-
-        unformatted_name = hex_dump(filepath, 'name')
-        formatted_name = translate(unformatted_name)
         
-        playername = formatted_name
-        money = ''.join([x.removeprefix("0x") for x in map(hex, hex_dump(filepath, 'money'))])
-        money = money.removeprefix('0')
-    
-        # This is tricky, as I can't view the player's id ingame
-        playerid = ''.join(map(str, hex_dump(filepath, "id")))
-        firstpokename = "test_pokename"
+        # Open the file and extract the data as a dictionary
+        with open(filepath, 'rb') as file:
+            openfile = file.read()
+            data = extract_data(openfile)
+            
         return render_template("edit_page.html", 
                                 savefile=savefile,
-                                playername=playername, 
-                                money=money, 
-                                playerid=playerid, 
-                                firstpokename=firstpokename
-                                )
+                                playername=data['name'], 
+                                money=data['money'], 
+                                playerid=data['id'], 
+                                firstpokename='bbb' # Have to change
+        )
         
 # Extra function I stole from Flask's documentation
 def allowed_file(filename):

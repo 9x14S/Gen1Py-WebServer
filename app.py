@@ -81,8 +81,9 @@ def edit():
                                 )
 
 #test
-@app.route("/done", methods=["POST"])
-def done():
+@app.route("/save", methods=["POST"])
+def save():
+    #TODO: Put your compilation functions here.
     testfile_directory=UPLOAD_FOLDER
     testfile_path='red_ONEPOKE_.sav'
     return send_from_directory(directory=testfile_directory, path=testfile_path)

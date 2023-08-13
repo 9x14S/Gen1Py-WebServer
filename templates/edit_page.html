@@ -5,7 +5,7 @@
 {% block content %}
 <h1 class="fileinfo">Editing file: {{ savefile }}</h1>
 <hr>
-<form action="/done" method="post" autocomplete="off" class="row g-3 container center">
+<form action="/save" method="post" autocomplete="off" class="row g-3 container center">
     <div class="col-md-6">
         <label for="playername" class="form-label">Player Name: {{ playername }}</label>
         <input class="form-control" type="text" name="playername" placeholder="New name:" pattern="/[A-Za-z]{1,10}/">

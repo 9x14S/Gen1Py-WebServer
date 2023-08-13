@@ -5,6 +5,7 @@ if __name__ == "__main__":
 from sys import argv
 import os 
 import ctypes
+import os
 
 from Package.Python.printhex import *
 #from printhex import * 
@@ -40,7 +41,7 @@ def close_file(file):
     return C_close_file(file)
     
 
-def checksum(file, edit: bool=False) -> int:
+def checksum(file) -> int:
     """ Calculates the checksum of the given file. """
     return C_checksum(file)
 

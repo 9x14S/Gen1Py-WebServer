@@ -10,7 +10,7 @@ app = Flask(__name__) # Turn this file into a Flask app
 ALLOWED_EXTENSIONS = ["sav"]
 UPLOAD_FOLDER = "Uploads"
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
-app.config["MAX_CONTENT_LENGTH"] = 33 * 1000 # Set the maximum file size to 32KB + 1KB
+app.config["MAX_CONTENT_LENGTH"] = 33 * 1024 # Set the maximum file size to 32KB + 1KB
 
 
 # Python Decorator assigns the below function to the assigned route.

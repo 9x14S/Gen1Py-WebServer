@@ -12,5 +12,5 @@ savetools.so : CTools/savetools.c
 	gcc -fPIE -shared -o CTools/savetools.so CTools/savetools.c -Wall 
 	$(PYTHON) -m venv .
 
-install : savetools.so
+install : 
 	$(PIP) install -r requirements.txt

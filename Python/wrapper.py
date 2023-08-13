@@ -2,10 +2,10 @@ if __name__ == "__main__":
     print("This file isn't executable.")
     exit(1)
     
-from sys import argv
 import ctypes
+import os
 
-library = ctypes.CDLL(".\\CTools\\savetools.so")
+library = ctypes.CDLL(os.path.join("CTools", "savetools.so"))
 
 C_checksum = library.checksum
 C_checksum.argtypes = [ctypes.c_void_p]
@@ -35,7 +35,7 @@ def close_file(file):
     return C_close_file(file)
     
 
-def checksum(file, edit: bool=False) -> int:
+def checksum(file) -> int:
     """ Calculates the checksum of the given file. """
     return C_checksum(file)
 

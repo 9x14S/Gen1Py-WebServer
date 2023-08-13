@@ -64,7 +64,7 @@ def edit():
 
         unformatted_name = hex_dump(filepath, 'name')
         formatted_name = translate(unformatted_name)
-        
+
         playername = formatted_name
         money = ''.join([x.removeprefix("0x") for x in map(hex, hex_dump(filepath, 'money'))])
         money = money.removeprefix('0')
@@ -83,7 +83,12 @@ def edit():
 #test
 @app.route("/save", methods=["POST"])
 def save():
+    savefile=request.headers.get('savefile', "")
+    playername=request.headers.get('playername', "")
+    money=request.headers.get('money', "")
+    playerid=request.headers.get('playerid', "")
+    firstpokename=request.headers.get('firstpokename', "")
     #TODO: Put your compilation functions here.
     testfile_directory=UPLOAD_FOLDER
-    testfile_path='red_ONEPOKE_.sav'
+    testfile_path=savefile
     return send_from_directory(directory=testfile_directory, path=testfile_path)

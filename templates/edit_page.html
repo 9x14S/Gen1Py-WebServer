@@ -5,24 +5,26 @@
 {% block content %}
 <h1 class="fileinfo">Editing file: {{ savefile }}</h1>
 <hr>
-<form action="/done" method="post" autocomplete="off" class="row g-3 container center">
+<form action="/save" method="post" autocomplete="off" class="row g-3 container center">
+    <input type="hidden" name="savefile" value="{{ savefile }}"/>
     <div class="col-md-6">
         <label for="playername" class="form-label">Player Name: {{ playername }}</label>
-        <input class="form-control" type="text" name="playername" placeholder="New name:" pattern="/[A-Za-z]{1,10}/">
+        <input class="form-control" type="text" name="playername" placeholder="New name:" pattern="[A-Za-z]{1,10}">
     </div>
     <div class="col-md-6">
         <label for="money" class="form-label">Money: ¥{{ money }}</label>
-        <input class="form-control" type="text" name="money" placeholder="New amount:  " pattern="/\d{0,6}/">
+        <input class="form-control" type="text" name="money" placeholder="New amount:  " pattern="\d{0,6}">
     </div>
     <div class="col-md-6">
         <label for="playerid" class="form-label">Player ID: {{ playerid }}</label>
-        <input class="form-control" type="text" name="playerid" placeholder="New ID:" pattern="/\d{0,5}/">
+        <input class="form-control" type="text" name="playerid" placeholder="New ID:" pattern="\d{0,5}">
     </div>
     <div class="col-md-6">
         <label for="firstpokename" class="form-label">Leading Party Pokemon: {{ firstpokename }}</label>
-        <input class="form-control" type="text" name="firstpokename" placeholder="New nickname: " pattern="/[A-Za-z]{1,10}/">
+        <input class="form-control" type="text" name="firstpokename" placeholder="New nickname: " pattern="[A-Za-z]{1,10}">
     </div>
+    <input type="submit" class="btn btn-primary" value="Save Changes">
 </form>
 <br>
-<a href="/">Abort Edit</a>
+<a href="/" class="btn btn-secondary">Go Back (Abort Edit)</a>
 {% endblock %}

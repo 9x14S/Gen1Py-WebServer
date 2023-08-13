@@ -16,6 +16,7 @@ import os
 
 from Package import * 
 from flask import Flask, render_template, request, redirect
+
 from werkzeug.utils import secure_filename
 app = Flask(__name__) # Turn this file into a Flask app
 
@@ -24,8 +25,12 @@ app = Flask(__name__) # Turn this file into a Flask app
 ALLOWED_EXTENSIONS = ["sav"]
 UPLOAD_FOLDER = "Uploads"
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
-app.config["MAX_CONTENT_LENGTH"] = 33 * 1000 # Set the maximum file size to 32KB + 1KB
+app.config["MAX_CONTENT_LENGTH"] = 33 * 1024 # Set the maximum file size to 32KB + 1KB
 
+# Extra function I stole from Flask's documentation
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 # Python Decorator assigns the below function to the assigned route.
 @app.route("/")
@@ -63,19 +68,34 @@ def edit():
         savefile=secure_filename(request.files['savefile'].filename)
         filepath = os.path.join(app.config['UPLOAD_FOLDER'], savefile)
         
-        # Open the file and extract the data as a dictionary
-        with open(filepath, 'rb') as file:
-            openfile = file.read()
-            data = extract_data(openfile)
-            
-        return render_template("edit_page.html", 
-                                savefile=savefile,
-                                playername=data['name'], 
-                                money=data['money'], 
-                                playerid=data['id'], 
-                                firstpokename='bbb' # Have to change
-        )
-        
+    # Open the file and extract the data as a dictionary
+    with open(filepath, 'rb') as file:
+        openfile = file.read()
+        data = extract_data(openfile)
+
+    return render_template("edit_page.html", 
+                            savefile=savefile,
+                            playername=data['name'], 
+                            money=data['money'], 
+                            playerid=data['id'], 
+                            firstpokename='bbb' # Have to change
+    )
+
+#test
+@app.route("/save", methods=["POST"])
+def save():
+    savefile=request.headers.get('savefile', "")
+    playername=request.headers.get('playername', "")
+    money=request.headers.get('money', "")
+    playerid=request.headers.get('playerid', "")
+    firstpokename=request.headers.get('firstpokename', "")
+    
+    #TODO: Put your compilation functions here.
+    testfile_directory=UPLOAD_FOLDER
+    testfile_path=savefile
+    return send_from_directory(directory=testfile_directory, path=testfile_path)
+
+  
 # Extra function I stole from Flask's documentation
 def allowed_file(filename):
     return '.' in filename and \

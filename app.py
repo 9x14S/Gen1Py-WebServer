@@ -1,6 +1,6 @@
 from Python.printhex import hex_dump, translate 
 from Python.wrapper import *
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, send_from_directory
 from werkzeug.utils import secure_filename
 import os
 app = Flask(__name__) # Turn this file into a Flask app
@@ -79,4 +79,10 @@ def edit():
                                 playerid=playerid, 
                                 firstpokename=firstpokename
                                 )
-        
+
+#test
+@app.route("/done", methods=["POST"])
+def done():
+    testfile_directory=UPLOAD_FOLDER
+    testfile_path='red_ONEPOKE_.sav'
+    return send_from_directory(directory=testfile_directory, path=testfile_path)

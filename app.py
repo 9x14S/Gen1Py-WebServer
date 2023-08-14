@@ -11,11 +11,10 @@ This program carries no warranty whatsoever. If you use it, you're responsible f
     
 Made by 9x14S and Micah Raney.
 """
-
 import os
 
 from Package import * 
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, send_from_directory
 from werkzeug.utils import secure_filename
 app = Flask(__name__) # Turn this file into a Flask app
 
@@ -36,46 +35,41 @@ def index():
 def upload():
     # Check if there's actually a file uploaded 
     if 'savefile' in request.files and request.files["savefile"].filename != '':
-        return redirect("/parse", code=307)
-    else:
-        return redirect("/")
-
-@app.route("/parse", methods=["POST"])
-def parse():
-    # TODO: call the Gen1Py functions to read the uploaded file and pass back savefile info. 
-    savefile = request.files['savefile']
-    if savefile and allowed_file(savefile.filename): # Save the file to /Uploads
-        filename = secure_filename(savefile.filename)
-        filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-        savefile.save(filepath)
-        
         return redirect("/edit", code=307)
-    
     return redirect("/")
+
 
 @app.route("/edit", methods=["GET", "POST"])
 def edit():
     if request.method=="GET":
-        return redirect("/") # Don't let users go straight to the edit page without a save file.
+        return redirect("/", code=303) # Don't let users go straight to the edit page without a save file.
         
     elif request.method=="POST":
-        
-        savefile=secure_filename(request.files['savefile'].filename)
-        filepath = os.path.join(app.config['UPLOAD_FOLDER'], savefile)
+        savefile = request.files['savefile']
+        if savefile and allowed_file(savefile.filename): # Save the file to /Uploads
+            filename = secure_filename(savefile.filename)
+            filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            savefile.save(filepath)
         
         # Open the file and extract the data as a dictionary
-        with open(filepath, 'rb') as file:
-            openfile = file.read()
-            data = extract_data(openfile)
+        with open(filepath, 'rb+') as file:
+            save = SaveFile(file.read())
+            data = save.extract_data()
             
         return render_template("edit_page.html", 
-                                savefile=savefile,
-                                playername=data['name'], 
-                                money=data['money'], 
-                                playerid=data['id'], 
-                                firstpokename='bbb' # Have to change
+                                data=data,
+                                savefile=filename
         )
-        
+
+@app.route("/download", methods=["GET", "POST"])
+def download_file():
+    if request.method == "GET":
+        return redirect("/", code=303)
+    elif request.method == "POST":
+        filepath = request.form.get("filepath")
+        return send_from_directory(app.config['UPLOAD_FOLDER'], filepath)
+
+
 # Extra function I stole from Flask's documentation
 def allowed_file(filename):
     return '.' in filename and \

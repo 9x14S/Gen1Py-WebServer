@@ -4,6 +4,25 @@ if __name__ == "__main__":
     
 from colorama import *
 
+BANK0 = range(0x0, 0x2000) # First bank, with hall of fame data
+BANK1 = range(0x2000, 0x4000) # Second bank, main bank
+BANK2 = range(0x4000, 0x6000) # Third, PC boxes 1-6
+BANK3 = range(0x6000, 0x8000) # Fourth, PC boxes 7-12
+
+MAIN = range(0x2598, 0x3523 + 1) # The main data, where the player's data is stored
+PLAYERNAME = range(0x2598, 0x2598 + 0xB) # Player's name
+RIVALNAME = range(0x25F6, 0x25F6 + 0xB) # Rival's name
+ID = range(0x2605, 0x2605 + 2) # Player's trainer ID
+MONEY = range(0x25F3, 0x25F3 + 3) # Player's amount of money
+
+BADGES = [0x2602] # Won badges
+COINS = range(0x2850, 0x2850 + 2) # Amount of slot coins 
+PLAYERSTARTER = [0x29C3] # Player's starter Pokémon
+RIVALSTARTER = [0x29C1] # Rival's starter Pokémon
+PIKACHU =  [0x271C] # Pikachu's friendship level (Only PKMN Yellow)
+ITEMS = range(0x25C9, 0x25C9 + 0x2A) # Items in inventory
+
+
 def hex_dump(opensave: bytes, selection: str):
     """ Prints a hex dump of all the relevant data in the file. 
         It is a rough copy-paste so some optimizations and fixes are needed. 
@@ -35,35 +54,35 @@ def hex_dump(opensave: bytes, selection: str):
         
     match selection:
         case '0':
-            bank = range(0x0, 0x2000) # First bank, with hall of fame data
+            bank = BANK0
         case '1':
-            bank = range(0x2000, 0x4000) # Second bank, main bank
+            bank = BANK1
         case '2':
-            bank = range(0x4000, 0x6000) # Third, PC boxes 1-6
+            bank = BANK2 
         case '3':
-            bank = range(0x6000, 0x8000) # Fourth, PC boxes 7-12
+            bank = BANK3
         case 'm' | 'M':
-            bank = range(0x2598, 0x3523 + 1) # The main data, where the player's data is stored
+            bank = MAIN
         case 'name':
-            bank = range(0x2598, 0x2598 + 0xB) # Player's name
+            bank = PLAYERNAME 
         case 'rival':
-            bank = range(0x25F6, 0x25F6 + 0xB) # Rival's name
+            bank = RIVALNAME
         case 'money':
-            bank = range(0x25F3, 0x25F3 + 3) # Player's amount of money
+            bank = MONEY
         case 'badges': 
-            bank = [0x2602] # Won badges
+            bank = BADGES
         case 'coins': 
-            bank = range(0x2850, 0x2850 + 2) # Amount of slot coins 
+            bank = COINS
         case 'rivalstarter':
-            bank = [0x29C1] # Rival's starter Pokémon
+            bank = RIVALSTARTER
         case 'playerstarter':
-            bank = [0x29C3] # Player's starter Pokémon
+            bank = PLAYERSTARTER
         case 'pikachu':
-            bank = [0x271C] # Pikachu's friendship level (Only PKMN Yellow)
+            bank = PIKACHU
         case 'id':
-            bank = range(0x2605, 0x2605 + 2) # Player's trainer ID
+            bank = ID
         case 'items':
-            bank = range(0x25C9, 0x25C9 + 0x2A) # Items in inventory
+            bank = ITEMS
         case _:
             raise ValueError(f"Unknown bank '{selection}'.")
     
@@ -138,10 +157,12 @@ def translate(data_string: list):
             output = ''.join([output, chr(char - 63)])
     return output
                 
-def hex_to_int(data: list):
-    money = ''.join([hex(byte).removeprefix('0x') for byte in data])
-    
-    return int(money)
+def hex_to_int(data: list, selector=False):
+    value = ''.join([hex(byte).removeprefix('0x') for byte in data])
+    if selector:
+        print(value)
+        return value
+    return int(value)
 
 def get_badges(data: list):
     data = data[0]
@@ -162,6 +183,6 @@ def get_pokemon(data: list):
     # TODO: 
     return data[0]
     
-def parse_items(data: list):
+def translate_items(data: list):
     # TODO:
     return data

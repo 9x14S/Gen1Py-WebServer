@@ -17,3 +17,6 @@ target
 Include
 main.py
 include
+CTools
+.vscode
+.github

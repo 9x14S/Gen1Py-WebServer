@@ -5,23 +5,16 @@
 {% block content %}
 <h1 class="fileinfo">Editing file: {{ savefile }}</h1>
 <hr>
-<form action="/done" method="post" autocomplete="off" class="row g-3 container center">
+<form action="/download" method="post" autocomplete="off" class="row g-3 container center">
+
+    <input type="hidden" value="{{ savefile }}" name="filepath"> 
+    {% for each in data %}
     <div class="col-md-6">
-        <label for="playername" class="form-label">Player Name: {{ playername }}</label>
-        <input class="form-control" type="text" name="playername" placeholder="New name:" pattern="/[A-Za-z]{1,10}/">
+        <label for="{{ each }}" class="form-label">{{ each }}: {{ data[each] }}</label>
+        <input class="form-control" type="text" name="{{ each }}" placeholder="New value: ">
     </div>
-    <div class="col-md-6">
-        <label for="money" class="form-label">Money: ¥{{ money }}</label>
-        <input class="form-control" type="text" name="money" placeholder="New amount:  " pattern="/\d{0,6}/">
-    </div>
-    <div class="col-md-6">
-        <label for="playerid" class="form-label">Player ID: {{ playerid }}</label>
-        <input class="form-control" type="text" name="playerid" placeholder="New ID:" pattern="/\d{0,5}/">
-    </div>
-    <div class="col-md-6">
-        <label for="firstpokename" class="form-label">Leading Party Pokemon: {{ firstpokename }}</label>
-        <input class="form-control" type="text" name="firstpokename" placeholder="New nickname: " pattern="/[A-Za-z]{1,10}/">
-    </div>
+    {% endfor %}
+    <button type="submit">Submit</button>
 </form>
 <br>
 <a href="/">Abort Edit</a>

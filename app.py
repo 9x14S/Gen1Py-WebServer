@@ -51,22 +51,29 @@ def edit():
             filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             savefile.save(filepath)
         
-        # Open the file and extract the data as a dictionary
-        with open(filepath, 'rb+') as file:
-            save = SaveFile(file.read())
-            data = save.extract_data()
-            
-        return render_template("edit_page.html", 
-                                data=data,
-                                savefile=filename
-        )
+            # Open the file and extract the data as a dictionary
+            with open(filepath, 'rb') as file:
+                save = SaveFile(file.read())
+                data = save.extract_data()
+                
+            return render_template("edit_page.html", 
+                                    data=data,
+                                    savefile=filename
+            )
+        return render_template("""<h1 style='font-size: 120px'>{{ error }} </h1>""", 
+                               error="The file is not a pokemon save file, wasn't uploaded correctly or is corrupt. ")
 
 @app.route("/download", methods=["GET", "POST"])
 def download_file():
     if request.method == "GET":
         return redirect("/", code=303)
     elif request.method == "POST":
-        filepath = request.form.get("filepath")
+        filepath = secure_filename(request.form.get("filepath"))
+        with open(app.config["UPLOAD_FOLDER"] + filepath, "wb+") as savefile:
+            save_data = SaveFile(savefile.read())
+            data_dict = request.form.to_dict(flat=True)
+            savefile.write(save_data.write_data(data_dict))
+            
         return send_from_directory(app.config['UPLOAD_FOLDER'], filepath)
 
 

@@ -8,7 +8,7 @@ from Package.Python.items import Items
 
 class SaveFile():
     def __init__(self, file: bytearray):
-        self.savefile: bytearray = file
+        self.savefile: bytearray = bytearray(file)
     
     def extract_data(self) -> dict:
         

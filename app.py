@@ -29,8 +29,6 @@ app.config["MAX_CONTENT_LENGTH"] = 33 * 1024 # Set the maximum file size to 32KB
 # Python Decorator assigns the below function to the assigned route.
 @app.route("/")
 def index():
-    print(os.getcwd())
-    # os.remove(os.path.join(os.getcwd(), UPLOAD_FOLDER, "*"))
     return render_template("index.html")
 
 @app.route("/upload", methods=["POST"])

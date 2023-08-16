@@ -4,6 +4,8 @@ if __name__ == "__main__":
     
 from colorama import *
 
+import os
+
 BANK0 = range(0x0, 0x2000) # First bank, with hall of fame data
 BANK1 = range(0x2000, 0x4000) # Second bank, main bank
 BANK2 = range(0x4000, 0x6000) # Third, PC boxes 1-6
@@ -92,6 +94,10 @@ def hex_to_int(data: list, selector=False) -> int:
 
 def get_badges(data: int) -> list: 
     """ Convert the int value to a list of strings """
+
+    print(f"Badge_int: {data}") # Debug
+    if data == 0:
+        return []
     divisor = 128
     
     return_badges = []
@@ -129,8 +135,19 @@ def untranslate_name(data: str) -> list:
     print(encoded_name)
     return encoded_name
         
-def checksum(save: list) -> int:
-    return sum(save[0x2598:0x3522]) % 255
+def checksum(file: bytearray) -> int:
+    checksum_total = bytearray(1)
+    for byte in file[0x2598:0x3523]:
+        temp = byte + checksum_total[0]
+        # print(f"Temp: {temp}")
+        if temp > 255:
+            checksum_total[0] = temp % 256
+        else:
+            checksum_total[0] += byte
+    print(f"Checksum_total: {checksum_total}")
+    checksum_total[0] = checksum_total[0] ^ 0xFF
+    return checksum_total
+   
 
 def upload_file_name(name: str) -> str:
     return name.split(".")[0] + "EDITED" + ".sav"

@@ -9,7 +9,7 @@ class Items():
     
     def translate_items(self, data: list) -> dict:
         """ Convert from the in-game representation to a dictionary """
-        if data[0] == 0: 
+        if data is None or data[0] == 0: 
             return {None: None}
         items = {}
         count = 1

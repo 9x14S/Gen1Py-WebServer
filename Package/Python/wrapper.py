@@ -8,7 +8,8 @@ from Package.Python.items import Items
 
 class SaveFile():
     def __init__(self, file: bytearray):
-        self.savefile: bytearray = bytearray(file)
+        self.savefile: bytearray = file
+        print(len(self.savefile)) # Debug
     
     def extract_data(self) -> dict:
         whatever = Items()
@@ -37,7 +38,6 @@ class SaveFile():
         save[0x2605:0x2605 + 2] = int_to_hex(data["id"])
         whatever = Items()
         save[0x25C9:0x25C9 + 0x2A] = whatever.untranslate_items(data['items'])
-        save[0x3523] = checksum(save)
         return save
 
     def __check_data(self, data: dict) -> dict:
@@ -48,14 +48,14 @@ class SaveFile():
 
         # print(f"DATA (before sanitizing): {data}") # Debug
         name_length = len(data["name"])
-        if name_length > 10 or name_length < 1:
+        if data["rival"] == "" or name_length > 10 or name_length < 1:
             if name_length > 10:
                 data["name"] = data["name"][:11]
             elif name_length < 1:
                 data["name"] = translate_name(self.savefile[0x2598:0x2598 + 0xB])
 
         rival_length = len(data["rival"])
-        if rival_length > 10 or rival_length < 1:
+        if data["rival"] == "" or rival_length > 10 or rival_length < 1:
             if rival_length > 10:
                 data["rival"] = data["rival"][:11]
             elif name_length < 1:
@@ -70,9 +70,12 @@ class SaveFile():
         if data["coins"] == "":
             data["coins"] = "0"
         
-        if data["items"] == "":
+        if data["items"] is None:
             whatever = Items()
             data["items"] = whatever.translate_items(self.savefile[0x25C9:0x25C9 + 0x2A])
+        if data.get("badges") is None:
+            data["badges"] = get_badges(self.savefile[0x2602])
+
         if data["pikachu"] == "":
             data["pikachu"] = "0"
         print(f"DATA (after sanitizing): {data}") # Debug

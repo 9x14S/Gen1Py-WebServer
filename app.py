@@ -11,7 +11,6 @@ This program carries no warranty whatsoever. If you use it, you're responsible f
     
 Made by 9x14S and Micah Raney.
 """
-import os
 
 from Package import * 
 from flask import Flask, render_template, request, redirect, send_from_directory
@@ -70,13 +69,20 @@ def download_file():
         return redirect("/", code=303)
     elif request.method == "POST":
         filepath = secure_filename(request.form.get("filepath"))
-        print(f"Filepath: {filepath}") # Debug
+        print(f"Filename: {filepath}") # Debug
         try: 
-            with open(os.path.join(app.config["UPLOAD_FOLDER"], filepath), "rb+") as savefile:
-                save_data = SaveFile(savefile.read())
+            path_with_folder = os.path.join(app.config["UPLOAD_FOLDER"], filepath)
+            with open(path_with_folder, "r+b") as savefile:
+                file_data = bytearray(savefile.read())
+                save_data = SaveFile(file_data)
                 data_dict = request.form.to_dict(flat=False)
                 print(data_dict) # Debug 
+                savefile.seek(0, 0)
                 savefile.write(save_data.write_data(data_dict))
+                total_checksum = checksum(file_data)
+                print(f"Previous checksum: {file_data[0x3523]}, Computed checksum: {total_checksum}")
+                savefile.seek(0x3523, 0)
+                savefile.write(total_checksum)
         except FileNotFoundError as e:
             print(e) # Debug
             return render_template("error_page.html")

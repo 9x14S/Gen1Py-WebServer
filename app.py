@@ -29,6 +29,8 @@ app.config["MAX_CONTENT_LENGTH"] = 33 * 1024 # Set the maximum file size to 32KB
 # Python Decorator assigns the below function to the assigned route.
 @app.route("/")
 def index():
+    print(os.getcwd())
+    # os.remove(os.path.join(os.getcwd(), UPLOAD_FOLDER, "*"))
     return render_template("index.html")
 
 @app.route("/upload", methods=["POST"])
@@ -54,14 +56,15 @@ def edit():
             # Open the file and extract the data as a dictionary
             with open(filepath, 'rb') as file:
                 save = SaveFile(file.read())
-                data = save.extract_data()
+                data, badges_owned = save.extract_data()
                 
             return render_template("edit_page.html", 
                                     data=data,
-                                    savefile=filename
+                                    savefile=filename,
+                                    badges_owned=badges_owned,
+                                    badges=BADGE_DICT
             )
-        return render_template("""<h1 style='font-size: 120px'>{{ error }} </h1>""", 
-                               error="The file is not a pokemon save file, wasn't uploaded correctly or is corrupt. ")
+        return render_template("error_page.html")
 
 @app.route("/download", methods=["GET", "POST"])
 def download_file():
@@ -69,10 +72,16 @@ def download_file():
         return redirect("/", code=303)
     elif request.method == "POST":
         filepath = secure_filename(request.form.get("filepath"))
-        with open(app.config["UPLOAD_FOLDER"] + filepath, "wb+") as savefile:
-            save_data = SaveFile(savefile.read())
-            data_dict = request.form.to_dict(flat=True)
-            savefile.write(save_data.write_data(data_dict))
+        print(f"Filepath: {filepath}") # Debug
+        try: 
+            with open(os.path.join(app.config["UPLOAD_FOLDER"], filepath), "rb+") as savefile:
+                save_data = SaveFile(savefile.read())
+                data_dict = request.form.to_dict(flat=False)
+                print(data_dict) # Debug 
+                savefile.write(save_data.write_data(data_dict))
+        except FileNotFoundError as e:
+            print(e) # Debug
+            return render_template("error_page.html")
             
         return send_from_directory(app.config['UPLOAD_FOLDER'], filepath)
 

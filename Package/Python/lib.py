@@ -29,7 +29,8 @@ BADGE_DICT = {"Boulder": 128,
               "Soul": 8, 
               "Marsh": 4, 
               "Volcano": 2, 
-              "Earth": 1
+              "Earth": 1,
+              "": 0
 }
 
 def hex_dump(opensave: bytes, selection: str) -> bytes:
@@ -71,6 +72,7 @@ def hex_dump(opensave: bytes, selection: str) -> bytes:
             raise ValueError(f"Unknown bank '{selection}'.")
     
     holder = [opensave[x] for x in bank]
+    print(holder) # Debug
     return holder
 
 
@@ -83,7 +85,7 @@ def hex_to_int(data: list, selector=False) -> int:
     """ Convert binary decimal representation into decimal """
     value = ''.join([hex(byte).removeprefix('0x') for byte in data])
     if selector:
-        print(value)
+        print(value) # Debug
         return value
     return int(value)
 
@@ -120,9 +122,12 @@ def translate_name(data: list):
 
 def untranslate_name(data: str) -> list: 
     """ Encode the string back to the game's encoding """
-    if len(data) > 10:
-        data = data[:11]
-    return [ord(x) + 63 for x in data].append(0x50)
+    encoded_name = bytearray()
+    for char in data:
+        encoded_name.append(ord(char) + 63)
+    encoded_name.append(0x50)
+    print(encoded_name)
+    return encoded_name
         
 def checksum(save: list) -> int:
     return sum(save[0x2598:0x3522]) % 255

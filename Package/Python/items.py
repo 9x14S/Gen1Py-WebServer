@@ -7,7 +7,7 @@ from Package.Python.item_dict import ITEM_DICT
 class Items():
     """ A class container for game item encoding/decoding """
     
-    def translate_items(data: list) -> dict:
+    def translate_items(self, data: list) -> dict:
         """ Convert from the in-game representation to a dictionary """
         if data[0] == 0: 
             return {None: None}
@@ -26,18 +26,22 @@ class Items():
         if total == 0 or None in data: # Return empty list if no items 
             return [0, 0xFF]
         
-        data = self.__reverse_dict(data)
-        items = [total, ]
+        REVERSE_DICT = self.__reverse_dict(ITEM_DICT)
+        items = [0, ]
         
         for key in data:
             if (items[0] > 20): # If the amount of items is greater than the max, add terminator
                 items.append(0xFF)
                 break
+            items.append(REVERSE_DICT[key])
             items.append(data[key])
             items[0] += 1
+        else:
+            items.append(0xFF)
             
+        print(items) # Debug
         return items
     
-    def __reverse_dict(data: dict) -> dict: 
+    def __reverse_dict(self, data: dict) -> dict: 
         """ Reverse the key-value pairs  """
         return {y: x for x, y in data.items()}

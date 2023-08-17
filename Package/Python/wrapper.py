@@ -32,7 +32,7 @@ class SaveFile():
         save[0x2598:0x2598 + 0xB] = untranslate_name(data["name"])
         save[0x25F6:0x25F6 + 0xB] = untranslate_name(data["rival"])
         save[0x25F3:0x25F3 + 3] = int_to_hex(data["money"])
-        save[0x2850:0x2850 + 3] = int_to_hex(data["coins"])
+        save[0x2850:0x2850 + 2] = int_to_hex(data["coins"])
         save[0x2602] = badges_to_int(data["badges"])
         save[0x271C] = int(data['pikachu'])
         save[0x2605:0x2605 + 2] = int_to_hex(data["id"])
@@ -62,17 +62,18 @@ class SaveFile():
                 data["rival"] = translate_name(self.savefile[0x25F6:0x25F6 + 0xB])
         
         if data["money"] == "":
-            data["money"] = "0"
+            data["money"] = "000000"
         
         if data["id"] == "":
-            data["id"] = "0"
+            data["id"] = "0000"
 
         if data["coins"] == "":
-            data["coins"] = "0"
+            data["coins"] = "0000"
         
         if data["items"] is None:
             whatever = Items()
             data["items"] = whatever.translate_items(self.savefile[0x25C9:0x25C9 + 0x2A])
+
         if data.get("badges") is None:
             data["badges"] = get_badges(self.savefile[0x2602])
 

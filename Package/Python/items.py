@@ -24,13 +24,15 @@ class Items():
         """ Convert a dictionary of item names and amounts to the in-game representation """
         total = len(data) 
         if total == 0 or None in data: # Return empty list if no items 
-            return [0, 0xFF]
+            empty_items = [0, 0xFF] + [0 for _ in range(40)]
+            print(f"Empty items: {empty_items}")
+            return empty_items
         
         REVERSE_DICT = self.__reverse_dict(ITEM_DICT)
         items = [0, ]
         
         for key in data:
-            if (items[0] > 20): # If the amount of items is greater than the max, add terminator
+            if (items[0] >= 20): # If the amount of items is greater than the max, add terminator
                 items.append(0xFF)
                 break
             items.append(REVERSE_DICT[key])
@@ -38,8 +40,10 @@ class Items():
             items[0] += 1
         else:
             items.append(0xFF)
+            while len(items) < (20 * 2 + 2):
+                items.append(0)
             
-        print(items) # Debug
+        print(f"Encoded items: {items}") # Debug
         return items
     
     def __reverse_dict(self, data: dict) -> dict: 

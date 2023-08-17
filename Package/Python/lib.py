@@ -132,7 +132,9 @@ def untranslate_name(data: str) -> list:
     for char in data:
         encoded_name.append(ord(char) + 63)
     encoded_name.append(0x50)
-    print(encoded_name)
+    while len(encoded_name) < 11:
+        encoded_name.append(0)
+    print(f"Encoded name: {encoded_name}")
     return encoded_name
         
 def checksum(file: bytearray) -> int:

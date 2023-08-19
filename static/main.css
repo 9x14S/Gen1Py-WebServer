@@ -12,11 +12,31 @@
     text-align: center;
     font-size: 40px;
 }
+
+p {
+    text-align: center;
+    font-size: medium;
+}
+
+h3 {
+    text-align: center;
+    font-size: 30px;
+}
+
 h2 {
     text-align: center;
     font-size: 40px;
 }
 
+form {
+    background-color: rgb(225, 225, 225);
+    text-align: center;
+    
+}
+
+body {
+    background-color: rgb(225, 225, 225);
+}
 
 html {
     font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;

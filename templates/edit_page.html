@@ -10,12 +10,20 @@
     <input type="hidden" value="{{ savefile }}" name="filepath"> 
     {% for each in data %}
     <div class="col-md-6">
-        <label for="{{ each }}" class="form-label">{{ each }}: {{ data[each] }}</label>
+        <label for="{{ each }}" class="form-label">{{ data_names[each] }}: {{ data[each] }}
+          <br>
+          <b>{{ data_tips[each] }}</b>
+        </label>
         <input class="form-control" type="text" name="{{ each }}" placeholder="New value: ">
     </div>
     {% endfor %}
 
     <div class="col-md-12">
+
+    <p>Badges: 
+      <br>
+      <b>{{ data_tips["badges"] }}</b>
+    </p>
     {% for badge in badges %}
     <div class="form-check form-check-inline">
         <input class="form-check-input" type="checkbox" name="badges" value="{{ badge }}" id="flexCheckDefault" {% if badge in badges_owned %} {{ "checked" }} {% endif%}>
@@ -24,6 +32,11 @@
         </label>
       </div>
       {% endfor %}
+      <div class="form-check form-check-inline">
+        <input class="form-check-input" type="checkbox" name="badges" value="BADGE_PLACEHOLDER" id="flexCheckDefault" hidden checked>
+        <label class="form-check-label" for="flexCheckDefault">
+        </label>
+      </div>
     </div>
     <button type="submit">Submit</button>
 </form>

@@ -24,16 +24,33 @@ RIVALSTARTER = [0x29C1] # Rival's starter Pokémon
 PIKACHU =  [0x271C] # Pikachu's friendship level (Only PKMN Yellow)
 ITEMS = range(0x25C9, 0x25C9 + 0x2A) # Items in inventory
 
-BADGE_DICT = {"Boulder": 128,
-              "Cascade": 64, 
-              "Thunder": 32, 
-              "Rainbow": 16, 
-              "Soul": 8, 
-              "Marsh": 4, 
-              "Volcano": 2, 
-              "Earth": 1,
-              "": 0
+BADGE_DICT = {"Boulder": 1,
+              "Cascade": 2, 
+              "Thunder": 4, 
+              "Rainbow": 8, 
+              "Soul": 16, 
+              "Marsh": 32, 
+              "Volcano": 64, 
+              "Earth": 128,
 }
+
+DATA_NAMES = {"rival": "Rival's Name",
+              "name": "Player's Name",
+              "id": "Player's ID",
+              "pikachu": "Pikachu's Happiness (Yellow)",
+              "money": "Current Money",
+              "coins": "Current Game Corner Coins",
+              "items": "Inventory Items",
+              "badges": "Currently Owned Badges"}
+
+DATA_TIPS = {"rival": "Up to 10 characters, preferably 7.",
+              "name": "Up to 10 characters, preferably 7.",
+              "id": "Up to 65,535",
+              "pikachu": "Up to 255",
+              "money": "Up to 999,999",
+              "coins": "Up to 9,999",
+              "items": "Usage: <NAME>:<AMOUNT>[, <NAME>: <AMOUNT>]. Previous items are lost if new are added.",
+              "badges": "Check which badges you want."}
 
 def hex_dump(opensave: bytes, selection: str) -> bytes:
     """ Returns the a bytes object containing the selected information. 
@@ -74,20 +91,25 @@ def hex_dump(opensave: bytes, selection: str) -> bytes:
             raise ValueError(f"Unknown bank '{selection}'.")
     
     holder = [opensave[x] for x in bank]
-    print(holder) # Debug
     return holder
 
 
 def int_to_hex(data: str) -> list: 
-    """ Convert decimal into binary decimal representation """
-    return [int(x, base=16) for x in data[::2]]
+    """ Convert decimal string into binary decimal representation """
+    hex_data = []
+    counter = 2
+    if len(data) > 4:
+        counter = 3
+    for x in range(counter, 0, -1):
+        hex_data.append(int(data[:2], base=16))
+        data = data[2:]
+    return hex_data
 
 
 def hex_to_int(data: list, selector=False) -> int: 
     """ Convert binary decimal representation into decimal """
     value = ''.join([hex(byte).removeprefix('0x') for byte in data])
     if selector:
-        print(value) # Debug
         return value
     return int(value)
 
@@ -134,19 +156,17 @@ def untranslate_name(data: str) -> list:
     encoded_name.append(0x50)
     while len(encoded_name) < 11:
         encoded_name.append(0)
-    print(f"Encoded name: {encoded_name}")
+    print(f"Encoded name: {encoded_name}") # Debug
     return encoded_name
         
 def checksum(file: bytearray) -> int:
     checksum_total = bytearray(1)
     for byte in file[0x2598:0x3523]:
         temp = byte + checksum_total[0]
-        # print(f"Temp: {temp}")
         if temp > 255:
             checksum_total[0] = temp % 256
         else:
             checksum_total[0] += byte
-    print(f"Checksum_total: {checksum_total}")
     checksum_total[0] = checksum_total[0] ^ 0xFF
     return checksum_total
    

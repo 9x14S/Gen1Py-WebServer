@@ -16,14 +16,16 @@ class Items():
         while count <= data[0]:
             items[ITEM_DICT[data[count]]] = data[count + 1]
             count += 2
-            print(items)
-
         return items
     
     def untranslate_items(self, data: dict) -> list:
         """ Convert a dictionary of item names and amounts to the in-game representation """
+        backup = data
+        print(f"Data: {data}, type: {type(data)}") # Debug
+        data = {x.split(':')[0].strip(): int(x.split(':')[1].strip()) for x in [z for z in data.split(',')]}
         total = len(data) 
-        if total == 0 or None in data: # Return empty list if no items 
+        print(f"Item data: {data}") # Debug
+        if total == 0 or data is None: # Return empty list if no items 
             empty_items = [0, 0xFF] + [0 for _ in range(40)]
             print(f"Empty items: {empty_items}")
             return empty_items

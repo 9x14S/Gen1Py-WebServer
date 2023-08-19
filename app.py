@@ -54,12 +54,14 @@ def edit():
             with open(filepath, 'rb') as file:
                 save = SaveFile(file.read())
                 data, badges_owned = save.extract_data()
-                
+                print(f"Badges owned: {badges_owned}") # Debug
             return render_template("edit_page.html", 
                                     data=data,
                                     savefile=filename,
                                     badges_owned=badges_owned,
-                                    badges=BADGE_DICT
+                                    badges=BADGE_DICT,
+                                    data_names=DATA_NAMES,
+                                    data_tips=DATA_TIPS
             )
         return render_template("error_page.html")
 
@@ -76,11 +78,10 @@ def download_file():
                 file_data = bytearray(savefile.read())
                 save_data = SaveFile(file_data)
                 data_dict = request.form.to_dict(flat=False)
-                print(data_dict) # Debug 
                 savefile.seek(0, 0)
                 savefile.write(save_data.write_data(data_dict))
                 total_checksum = checksum(file_data)
-                print(f"Previous checksum: {file_data[0x3523]}, Computed checksum: {total_checksum}")
+                print(f"Previous checksum: {file_data[0x3523]}, Computed checksum: {total_checksum[0]}") # Debug
                 savefile.seek(0x3523, 0)
                 savefile.write(total_checksum)
         except FileNotFoundError as e:

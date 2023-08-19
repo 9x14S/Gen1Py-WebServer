@@ -24,6 +24,7 @@ RIVALSTARTER = [0x29C1] # Rival's starter Pokémon
 PIKACHU =  [0x271C] # Pikachu's friendship level (Only PKMN Yellow)
 ITEMS = range(0x25C9, 0x25C9 + 0x2A) # Items in inventory
 
+# Badge values. They are all added up
 BADGE_DICT = {"Boulder": 1,
               "Cascade": 2, 
               "Thunder": 4, 
@@ -34,6 +35,7 @@ BADGE_DICT = {"Boulder": 1,
               "Earth": 128,
 }
 
+# Data display strings
 DATA_NAMES = {"rival": "Rival's Name",
               "name": "Player's Name",
               "id": "Player's ID",
@@ -41,16 +43,19 @@ DATA_NAMES = {"rival": "Rival's Name",
               "money": "Current Money",
               "coins": "Current Game Corner Coins",
               "items": "Inventory Items",
-              "badges": "Currently Owned Badges"}
+              "badges": "Currently Owned Badges"
+}
 
-DATA_TIPS = {"rival": "Up to 10 characters, preferably 7.",
-              "name": "Up to 10 characters, preferably 7.",
-              "id": "Up to 65,535",
+# Data modification tips 
+DATA_TIPS =  {"rival": "Up to 10 characters. If more than 7, text might look weird.",
+              "name": "Up to 10 characters. If more than 7, text might look weird. Might cause Pikachu to stop following you in Pokémon Yellow.",
+              "id": "Up to 65,535.",
               "pikachu": "Up to 255",
               "money": "Up to 999,999",
               "coins": "Up to 9,999",
-              "items": "Usage: <NAME>:<AMOUNT>[, <NAME>: <AMOUNT>]. Previous items are lost if new are added.",
-              "badges": "Check which badges you want."}
+              "items": "Usage: <ITEM>:<AMOUNT>[, <ITEM>: <AMOUNT>]. Previous items are lost if new ones are added. Max: 20 items. If you insert an item more than once, when editing again it will be summed together into one.",
+              "badges": "Check which badges you want."
+}
 
 def hex_dump(opensave: bytes, selection: str) -> bytes:
     """ Returns the a bytes object containing the selected information. 
@@ -116,8 +121,6 @@ def hex_to_int(data: list, selector=False) -> int:
 
 def get_badges(data: int) -> list: 
     """ Convert the int value to a list of strings """
-
-    print(f"Badge_int: {data}") # Debug
     if data == 0:
         return []
     divisor = 128
@@ -137,6 +140,7 @@ def badges_to_int(data: list) -> int:
     return sum([BADGE_DICT[x] for x in data])
 
 def translate_name(data: list): 
+    # Future TODO:
     """ Convert name to ASCII
     Still needs some work to actually encode all characters correctly  """
     output = ''
@@ -149,6 +153,7 @@ def translate_name(data: list):
     return output
 
 def untranslate_name(data: str) -> list: 
+    # Future TODO:
     """ Encode the string back to the game's encoding """
     encoded_name = bytearray()
     for char in data:
@@ -156,10 +161,11 @@ def untranslate_name(data: str) -> list:
     encoded_name.append(0x50)
     while len(encoded_name) < 11:
         encoded_name.append(0)
-    print(f"Encoded name: {encoded_name}") # Debug
     return encoded_name
         
+
 def checksum(file: bytearray) -> int:
+    """ Calculate the game's save file checksum."""
     checksum_total = bytearray(1)
     for byte in file[0x2598:0x3523]:
         temp = byte + checksum_total[0]
@@ -171,5 +177,22 @@ def checksum(file: bytearray) -> int:
     return checksum_total
    
 
-def upload_file_name(name: str) -> str:
-    return name.split(".")[0] + "EDITED" + ".sav"
+def get_id(data: list) -> int:
+    """ Translate the extracted data into the player's ID"""
+    id = ""
+    for each in data:
+        id += hex(each).removeprefix("0x")
+    return int(id, base=16)
+
+def unget_id(data: str) -> list:
+    """ Translate back the modified ID into the game's encoding"""
+    if int(data) == 0:
+        return [0, 0]
+    hex_id = hex(int(data)).removeprefix("0x")
+    hex_length = len(hex_id)
+    hex_length = 4 - hex_length
+    while hex_length != 0:
+        hex_id = '0' + hex_id
+        hex_length -= 1
+    id = [int(hex_id[:2], base=16), int(hex_id[2:4], base=16)]
+    return id

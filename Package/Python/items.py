@@ -9,45 +9,62 @@ class Items():
     
     def translate_items(self, data: list) -> dict:
         """ Convert from the in-game representation to a dictionary """
-        if data is None or data[0] == 0: 
-            return {None: None}
+        if data[0] == 0: 
+            return {}
         items = {}
         count = 1
         while count <= data[0]:
-            items[ITEM_DICT[data[count]]] = data[count + 1]
+            key = ITEM_DICT[data[count]]
+            if key in items:
+                items[key] += data[count + 1]
+            else:
+                items[key] = data[count + 1]
             count += 2
         return items
     
-    def untranslate_items(self, data: dict) -> list:
+    def untranslate_items(self, data: str) -> list:
         """ Convert a dictionary of item names and amounts to the in-game representation """
-        backup = data
-        print(f"Data: {data}, type: {type(data)}") # Debug
-        data = {x.split(':')[0].strip(): int(x.split(':')[1].strip()) for x in [z for z in data.split(',')]}
-        total = len(data) 
-        print(f"Item data: {data}") # Debug
-        if total == 0 or data is None: # Return empty list if no items 
+        
+        # Get each item name and amount grouped together in a dictionary
+        split_data = data.split(',')
+        split_data = map(str.strip, split_data)
+        container = []
+        for dict_entry in split_data:
+            data = {}
+            split_entry = dict_entry.split(':')
+            data[split_entry[0]] = int(split_entry[1])
+            container.append(data)
+            
+        if len(data) == 2 or len(data) == 0:
             empty_items = [0, 0xFF] + [0 for _ in range(40)]
-            print(f"Empty items: {empty_items}")
             return empty_items
         
+        
+        # Invert the keys and values
         REVERSE_DICT = self.__reverse_dict(ITEM_DICT)
+        # Start the item counter
         items = [0, ]
         
-        for key in data:
+        # Add to the items list
+        # TODO: add checker for non found items
+        for entry in container:
             if (items[0] >= 20): # If the amount of items is greater than the max, add terminator
                 items.append(0xFF)
                 break
-            items.append(REVERSE_DICT[key])
-            items.append(data[key])
-            items[0] += 1
+            key = [x for x in entry.keys()][0]
+            found = REVERSE_DICT.get(key.strip(' '), None)
+            if found is None:
+                continue
+            else:
+                items.append(found)
+                items.append(entry[key])
+                items[0] += 1
         else:
             items.append(0xFF)
             while len(items) < (20 * 2 + 2):
                 items.append(0)
-            
-        print(f"Encoded items: {items}") # Debug
         return items
     
     def __reverse_dict(self, data: dict) -> dict: 
-        """ Reverse the key-value pairs  """
+        """ Reverse the key-value pairs. """
         return {y: x for x, y in data.items()}

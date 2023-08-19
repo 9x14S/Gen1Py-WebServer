@@ -1,3 +1,4 @@
+# Item dictionary with internal item IDs
 ITEM_DICT = {0x01: 'Master Ball',
 0x02: 'Ultra Ball',
 0x03: 'Great Ball',

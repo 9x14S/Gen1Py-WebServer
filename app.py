@@ -45,34 +45,44 @@ def edit():
         
     elif request.method=="POST":
         savefile = request.files['savefile']
-        if savefile and allowed_file(savefile.filename): # Save the file to /Uploads
-            filename = secure_filename(savefile.filename)
-            filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-            savefile.save(filepath)
-        
-            # Open the file and extract the data as a dictionary
-            with open(filepath, 'rb') as file:
-                save = SaveFile(file.read())
-                data, badges_owned = save.extract_data()
-                print(f"Badges owned: {badges_owned}") # Debug
-            return render_template("edit_page.html", 
-                                    data=data,
-                                    savefile=filename,
-                                    badges_owned=badges_owned,
-                                    badges=BADGE_DICT,
-                                    data_names=DATA_NAMES,
-                                    data_tips=DATA_TIPS
-            )
-        return render_template("error_page.html")
+
+        # Save the file to /Uploads
+        try:
+            if savefile and allowed_file(savefile.filename): 
+                filename = secure_filename(savefile.filename)
+                filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+                savefile.save(filepath)
+            
+                # Open the file and extract the data as a dictionary
+                with open(filepath, 'rb') as file:
+                    save = SaveFile(file.read())
+                    data, badges_owned = save.extract_data()
+                    
+                # Render the template with the extracted data 
+                return render_template("edit_page.html", 
+                                        data=data,
+                                        savefile=filename,
+                                        badges_owned=badges_owned,
+                                        badges=BADGE_DICT,
+                                        data_names=DATA_NAMES,
+                                        data_tips=DATA_TIPS
+                )
+        except Exception:
+            # If something went wrong, render the error page
+            return render_template("error_page.html")
 
 @app.route("/download", methods=["GET", "POST"])
-def download_file():
+def download_file(): 
+    # Editing has been done and file is to be sent
+    
     if request.method == "GET":
         return redirect("/", code=303)
+    
     elif request.method == "POST":
         filepath = secure_filename(request.form.get("filepath"))
-        print(f"Filename: {filepath}") # Debug
         try: 
+            # Open the file, read the data, compare it and then write the data
+            # supplied by the form into it
             path_with_folder = os.path.join(app.config["UPLOAD_FOLDER"], filepath)
             with open(path_with_folder, "r+b") as savefile:
                 file_data = bytearray(savefile.read())
@@ -81,11 +91,10 @@ def download_file():
                 savefile.seek(0, 0)
                 savefile.write(save_data.write_data(data_dict))
                 total_checksum = checksum(file_data)
-                print(f"Previous checksum: {file_data[0x3523]}, Computed checksum: {total_checksum[0]}") # Debug
                 savefile.seek(0x3523, 0)
                 savefile.write(total_checksum)
         except FileNotFoundError as e:
-            print(e) # Debug
+            print(e) 
             return render_template("error_page.html")
             
         return send_from_directory(app.config['UPLOAD_FOLDER'], filepath)

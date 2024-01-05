@@ -21,18 +21,23 @@ Once the above steps are completed, run the command `python -m flask run` (Windo
 
 + [x] A function for printing the data inside a save
 
-+ [ ] Design the webpages
++ [ ] Better design the webpages
 
 + [ ] Make the code less of a mess
 
-+ [ ] Linux/MacOS compatibility
++ [ ] Linux/MacOS/Windows compatibility
 
 + [ ] Support for other localizations and games in the generation (Yellow)
+
++ [ ] Add more editing options.
 
 ## Posibilities to Expand
 
 + [ ] A way to import the data from the Pokemon Showdown export option
+      
++ [ ] A GUI, or maybe making it a command line tool.
+      
++ [ ] Adding more support for Gen 1.
+      
++ [ ] Adding support for other generations.
 
-### Current goal
-
-+ [ ] A simple online version so that nothing has to be downloaded/installed
